@@ -75,12 +75,21 @@ const App = () => {
     return null;
   };
 
-  useEffect(() => {
-    const winner = checkWinner();
-    if (winner) {
-      setFinishedState(winner);
-    }
-  }, [gameState]);
+  /**
+   * local checkWinner useEffect is not reqd.
+   * 
+   * the backend server handles this now.....
+   */
+  
+  // useEffect(() => {
+  //   const winner = checkWinner();
+  //   if (winner) {
+  //     setFinishedState(winner);
+  //     // Notify server that game has ended
+  //     sendMessage("gameEnded", {});
+  //   }
+  // }, [gameState]);
+
 
   const takePlayerName = async () => {
     const result = await Swal.fire({
@@ -119,6 +128,12 @@ const App = () => {
         case "OpponentFound":
           setPlayingAs(message.data.playingAs);
           setOpponentName(message.data.opponentName);
+
+          // Use server's fresh game state
+          setGameState(message.data.gameState);
+          setCurrentPlayer(message.data.currentPlayer);
+          setFinishedState(false);
+          setFinishedArrayState([]);
           break;
 
         case "OpponentNotFound":
@@ -126,15 +141,21 @@ const App = () => {
           break;
 
         case "playerMoveFromServer":
-          const { id, sign } = message.data;
-          setGameState((prevState) => {
-            let newState = [...prevState];
-            const rowIndex = Math.floor(id / 3);
-            const colIndex = id % 3;
-            newState[rowIndex][colIndex] = sign;
-            return newState;
-          });
-          setCurrentPlayer(sign === "circle" ? "cross" : "circle");
+          // Update game state from server
+          setGameState(message.data.gameState);
+          setCurrentPlayer(message.data.currentPlayer);
+          if (message.data.finished) {
+            setFinishedState(message.data.winner);
+          }
+          break;
+
+        case "moveConfirmed":
+          // Confirm our own move with server state
+          setGameState(message.data.gameState);
+          setCurrentPlayer(message.data.currentPlayer);
+          if (message.data.finished) {
+            setFinishedState(message.data.winner);
+          }
           break;
 
         case "opponentLeftMatch":
@@ -142,7 +163,13 @@ const App = () => {
           break;
 
         case "gameReset":
+          // Reset game state when server sends reset signal
           resetGameState();
+          break;
+
+        case "gameEndedWaitingForAction":
+          // Game ended, players are now inactive until they choose an action
+          console.log("Game ended, waiting for player action");
           break;
 
         default:
@@ -180,6 +207,7 @@ const App = () => {
     const username = result.value;
     setPlayerName(username);
 
+    // Connect to WebSocket
     wsRef.current = connectWebSocket();
 
     // Wait for connection, then send request to play
@@ -220,15 +248,20 @@ const App = () => {
     const username = result.value;
     setPlayerName(username);
     
+    // Reset game state first
     resetGameState();
     
+    // Sending play again request to server 
+    // this will make the user available for matching for the next game
     sendMessage("playAgain", {});
     
+    // now, request to play with new name
     setTimeout(() => {
       sendMessage("request_to_play", { playerName: username });
     }, 100);
   };
 
+  // Cleanup WebSocket on component unmount
   useEffect(() => {
     return () => {
       if (wsRef.current) {

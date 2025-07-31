@@ -38,65 +38,41 @@ const Square = ({
   setCurrentPlayer,
   sendMessage,
 }) => {
-  const [icon, setIcon] = useState(null);
-
   const clickOnSquare = () => {
     // Prevent moves if it's not the player's turn
     if (playingAs !== currentPlayer) {
       return;
     }
 
-    // If the game is finished, then...
-    // don't allow any moves
+    // Prevent moves if game is finished
     if (finishedState) {
       return;
     }
 
+    // Prevent moves if square is already filled
     if (currentElement === "circle" || currentElement === "cross") {
       return;
     }
 
-    if (!icon) {
-      if (currentPlayer === "circle") {
-        setIcon(<CircleSvg />);
-      } else {
-        setIcon(<CrossSvg />);
-      }
-
-      const myCurrentPlayer = currentPlayer;
-
-      
-      sendMessage("playerMoveFromClient", {
-        id,
-        sign: myCurrentPlayer,
-      });
-
-      // Update local game state
-      setGameState((prevState) => {
-        let newState = [...prevState];
-        const rowIndex = Math.floor(id / 3);
-        const colIndex = id % 3;
-        newState[rowIndex][colIndex] = myCurrentPlayer;
-        return newState;
-      });
-
-      
-      setCurrentPlayer(currentPlayer === "circle" ? "cross" : "circle");
-    }
+    // Send move to server - server will handle all game state updates
+    sendMessage("playerMoveFromClient", {
+      id,
+      sign: currentPlayer,
+    });
   };
 
-  
+  // Determine square styling
   const getSquareClasses = () => {
     let classes = "w-20 h-20 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center transition-all duration-300 border-2 border-transparent ";
 
-
+    // Add hover effect if clickable
     if (!finishedState && playingAs === currentPlayer && currentElement !== "circle" && currentElement !== "cross") {
       classes += "hover:bg-white/20 hover:border-white/30 cursor-pointer hover:scale-105 ";
     } else {
       classes += "cursor-not-allowed ";
     }
 
-    // Winning highlight
+    // Add winning highlight
     if (finishedArrayState.includes(id)) {
       if (finishedState === "circle") {
         classes += "bg-blue-500/30 border-blue-400 ring-2 ring-blue-400 ";
@@ -105,7 +81,7 @@ const Square = ({
       }
     }
 
-    // the styling needs to be disabled, sinvce the game is finished
+    // Add disabled styling for finished game
     if (finishedState && !finishedArrayState.includes(id)) {
       classes += "opacity-60 ";
     }
@@ -118,15 +94,14 @@ const Square = ({
     return classes;
   };
 
-
+  // Render the appropriate icon
   const renderIcon = () => {
     if (currentElement === "circle") {
       return <CircleSvg />;
     } else if (currentElement === "cross") {
       return <CrossSvg />;
-    } else {
-      return icon;
     }
+    return null; // Empty square
   };
 
   return (
