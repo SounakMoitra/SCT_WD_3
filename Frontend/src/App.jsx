@@ -272,7 +272,7 @@ const App = () => {
 
   if (!playOnline) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-6xl font-bold text-white mb-8 animate-pulse">
             Tic Tac Toe
@@ -280,7 +280,7 @@ const App = () => {
           <div className="space-y-4">
             <button
               onClick={playOnlineClick}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-lg border border-gray-600"
             >
               Play Online
             </button>
@@ -295,7 +295,7 @@ const App = () => {
 
   if (playOnline && !opponentName) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-6"></div>
           <h2 className="text-3xl font-bold text-white mb-4">
@@ -306,7 +306,7 @@ const App = () => {
           </p>
           <button
             onClick={resetGame}
-            className="mt-6 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors"
+            className="mt-6 bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors border border-gray-600"
           >
             Cancel
           </button>
@@ -316,7 +316,7 @@ const App = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 py-8">
       <div className="container mx-auto px-4">
         {/* Player Info */}
         <div className="flex justify-between items-center mb-8 bg-white/10 backdrop-blur-md rounded-lg p-4">
@@ -413,13 +413,13 @@ const App = () => {
             <div className="space-x-4">
               <button
                 onClick={playAgain}
-                className="mt-4 bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
+                className="mt-4 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 border border-gray-600"
               >
                 Play Again
               </button>
               <button
                 onClick={resetGame}
-                className="mt-4 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
+                className="mt-4 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 border border-gray-500"
               >
                 Main Menu
               </button>
